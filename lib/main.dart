@@ -6,9 +6,15 @@ import 'package:bera/scr/UI/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:bloc/bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:bera/scr/cts_api/list_companies.dart';  //list companies package
+
+
 
 
 void main() {
+  // called listcompanies() function for testting
+  //listCompanies();
+
   WidgetsFlutterBinding.ensureInitialized();
   BlocSupervisor.delegate = SimpleBlocDelegate();
   final UserRepository userRepository = UserRepository();
