@@ -1,6 +1,21 @@
 //google jobs api and google auth for service account imports
+import 'package:flutter/services.dart' show rootBundle;
 import 'package:googleapis/jobs/v3.dart';
 import 'package:googleapis_auth/auth_io.dart';
+import 'dart:async';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+
+Future<String> _loadAsset() async{
+  return await rootBundle.loadString('assets/key.json');
+}
+
+//Future loadKeyFile() async{
+//  String file = await _loadAsset();
+//  print(file);
+//}
+
+
+
 
 //service account credentials json
 final _accountCredentials = new ServiceAccountCredentials.fromJson(r'''
@@ -13,11 +28,21 @@ final _accountCredentials = new ServiceAccountCredentials.fromJson(r'''
 }
 ''');
 
+
 //not sure what this is but defines scope of jobs api?
 const _SCOPES = const [JobsApi.JobsScope];
 
 //function to list companies in cts
-void listCompanies() {
+Future listCompanies() async {
+
+  String a = "test";
+  print(a);
+
+
+
+
+  print("SECOND print ${_accountCredentials.email}");
+
   //create our client with service account credentials
   clientViaServiceAccount(_accountCredentials, _SCOPES).then((
       AuthClient client) {
