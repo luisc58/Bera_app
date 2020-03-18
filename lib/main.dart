@@ -3,21 +3,28 @@ import 'package:bera/scr/Blocs/simple_bloc_delegate.dart';
 import 'package:bera/scr/DataLayer/user_repository.dart';
 import 'package:bera/scr/UI/Login/login_screen.dart';
 import 'package:bera/scr/UI/home_screen.dart';
+import 'package:bera/scr/cts_api/CtsClient.dart';
 import 'package:flutter/material.dart';
 import 'package:bloc/bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:bera/scr/cts_api/list_companies.dart';
-import 'package:googleapis_auth/auth.dart';  //list companies package
-import 'dart:async';
+import 'package:googleapis/jobs/v3.dart';
 
 
 
 
-void main(){
-  // called listcompanies() function for testing
-
-
+void main() async{
   WidgetsFlutterBinding.ensureInitialized();
+  // MY TEST
+  List<Company> companies;
+  CtsClient jobs = new CtsClient();
+  await jobs.storage.clear();
+
+  companies = await jobs.listCompanies();
+  for(Company i in companies){
+    print("Company Name is: ${i.displayName}");
+  }
+  // END OF MY TEST
+
   BlocSupervisor.delegate = SimpleBlocDelegate();
   final UserRepository userRepository = UserRepository();
   runApp(

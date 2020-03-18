@@ -13,8 +13,6 @@ class SecureStorage {
         value: credentials.email);
     await storage.write(key: "identifier",
         value: credentials.clientId.identifier);
-    await storage.write(key: "secret",
-        value: credentials.clientId.secret);
     await storage.write(key: "privateKey",
         value: credentials.privateKey);
     await storage.write(key: "privateRSAKey",
@@ -22,11 +20,14 @@ class SecureStorage {
   }
 
   //Get Saved Credentials
-  Future<Map<String, dynamic>> getCredentials() async {
+  Future<Map<String, String>> getCredentials() async {
     var result = await storage.readAll();
-    if (result.isEmpty) return null;
+
+    if (result.isEmpty) {
+      return null;
+    }
     return result;
-  }
+    }
 
   //Clear Saved Credentials
   Future clear(){
