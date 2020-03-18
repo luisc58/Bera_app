@@ -15,14 +15,20 @@ import 'package:googleapis/jobs/v3.dart';
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
   // MY TEST
-  List<Company> companies;
-  CtsClient jobs = new CtsClient();
-  await jobs.storage.clear();
+  List<Job> myJobs;
+  CtsClient jobs = CtsClient();
 
-  companies = await jobs.listCompanies();
-  for(Company i in companies){
-    print("Company Name is: ${i.displayName}");
+  String query = 'companyName="projects/jobsolutionstest/companies/fd831907-1af2-4323-92b1-e4dc9876cdf3"';    //note queries need to be made like this
+  String query2 = 'companyName="projects/jobsolutionstest/companies/fd831907-1af2-4323-92b1-e4dc9876cdf3" AND status="OPEN"';   //MULITPLE PARAM QUERY
+  print(query2);
+  myJobs = await jobs.getListJobsByCompany(query2);
+  for(Job i in myJobs){
+    print("Job title is: ${i.title}");
   }
+//  companies = await jobs.listCompanies();
+//  for(Company i in companies){
+//    print("Company Name is: ${i.name}");
+//  }
   // END OF MY TEST
 
   BlocSupervisor.delegate = SimpleBlocDelegate();
