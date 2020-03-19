@@ -61,7 +61,9 @@ class CtsClient{
   }
 
   //List companies in cls
-  Future<List<Company>> getListCompanies({String pageToken = "", int pageSize = 100, bool requireOpenJobs = false}) async{
+  Future<List<Company>> getListCompanies({String pageToken = "",
+    int pageSize = 100, bool requireOpenJobs = false}) async{
+
     var jobs = await _getClient();
     
     print("Getting All Companies...");
@@ -75,23 +77,100 @@ class CtsClient{
     return response.companies;
   }
 
-  Future<List<Job>> getListJobsByCompany(String filter,{String pageToken = "",int pageSize = 100, String jobView = "JOB_VIEW_UNSPECIFIED" }) async{
+  Future<List<Job>> getListJobsByCompany(String filter, {
+    String pageToken = "",int pageSize = 100,
+    String jobView = "JOB_VIEW_UNSPECIFIED" }) async {
+
     var jobs = await _getClient();
 
     print("Getting Filtered Jobs...");
 
-    ListJobsResponse response = await jobs.projects.jobs.list(tenantId,jobView: jobView,pageToken: pageToken,pageSize: pageSize,filter: filter);
+    ListJobsResponse response = await jobs.projects.jobs.list(tenantId,
+        jobView: jobView,pageToken: pageToken,pageSize: pageSize,
+        filter: filter);
 
-    return response.jobs;
+    // return empty list if no jobs
+    return (response.jobs == null)? [] : response.jobs;
   }
 
-  //TODO listAllJobs()
-  //TODO getCompany()
-  //TODO getJob()
+  Future<List<Job>> getAllJobs() async{
+    List<Job> allJobs = [];
+    List<Company> companies = await getListCompanies();
+
+    for(Company i in companies){
+      String name  = i.name;
+      String filter = 'companyName="'+name+'"';
+      allJobs.addAll(await getListJobsByCompany(filter));
+    }
+
+    return allJobs;
+  }
+
+  Future<Company> getCompany(String name) async{
+    var jobs = await _getClient();
+
+    return jobs.projects.companies.get(name);
+  }
+
+  Future<Job> getJob(String name) async{
+    var jobs = await _getClient();
+
+    return jobs.projects.jobs.get(name);
+  }
+
+  Future createCompany(String displayName, String externalId) async{
+    var jobs = await _getClient();
+
+    //request body
+    var request = CreateCompanyRequest.fromJson({
+      "company": {
+        "displayName":displayName,
+        "externalId":externalId,
+      }
+    });
+
+    // print confirmation
+    jobs.projects.companies.create(request, tenantId).then(
+            (Company i)=> print("Successfully created "
+                "company ${i.displayName}..."));
+
+  }
+
+
+  //createJob
+  Future createJob(String company,String requisitionId,String title,String description,
+      List<String> emails, List<String> accommodations,
+      {String instructions = "",List<String> uris = const []}) async{
+
+    var jobs = await _getClient();
+
+    var request = CreateJobRequest.fromJson({
+      "job": {
+        "requisitionId": requisitionId,
+        "title": title,
+        "description": description,
+        "companyName":company,
+        "applicationInfo": {
+          "emails":emails,
+          "instructions":instructions,
+          "uris":uris,
+        },
+        "customAttributes": {
+          "accommodations": {
+            "stringValues": accommodations,
+            "filterable": true,
+          }
+        },
+      }
+    });
+
+    jobs.projects.jobs.create(request, tenantId).then(
+            (Job i) => print("Successfully created job: ${i.title} with accommodations: "
+                "${i.customAttributes['accommodations'].stringValues[0]}"));
+  }
+
   //TODO deleteCompany()
   //TODO deleteJob()
-  //TODO addCompany()
-  //TODO addJob()
   //TODO jobSearch()
 
 }
