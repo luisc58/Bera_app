@@ -14,16 +14,6 @@ import 'package:googleapis/jobs/v3.dart';
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
-  // MY TEST
-  List<Job> i;
-  CtsClient jobs = CtsClient();
-
-  i = await jobs.getAllJobs();
-//
-  i.forEach((Job j)=> print("job name: ${j.name} \n title display: ${j.title}"));
-
-
-  // END OF MY TEST
 
   BlocSupervisor.delegate = SimpleBlocDelegate();
   final UserRepository userRepository = UserRepository();
