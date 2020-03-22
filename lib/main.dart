@@ -3,13 +3,19 @@ import 'package:bera/scr/Blocs/simple_bloc_delegate.dart';
 import 'package:bera/scr/DataLayer/user_repository.dart';
 import 'package:bera/scr/UI/Employee_screen.dart';
 import 'package:bera/scr/UI/Login/login_screen.dart';
+import 'package:bera/scr/cts_api/CtsClient.dart';
 import 'package:flutter/material.dart';
 import 'package:bloc/bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:googleapis/jobs/v3.dart';
 
 
-void main() {
+
+
+void main(){
   WidgetsFlutterBinding.ensureInitialized();
+  myTest();
+
   BlocSupervisor.delegate = SimpleBlocDelegate();
   final UserRepository userRepository = UserRepository();
   runApp(
@@ -45,4 +51,32 @@ class App extends StatelessWidget {
       ),
     );
   }
+}
+
+void myTest() async{
+  CtsClient client = new CtsClient();
+  List<Company> j = await client.getListCompanies();
+
+//  for (Company i in j) {
+//    if(i.displayName == "Google"){
+//      i.keywordSearchableJobCustomAttributes = ["accommodations"];
+//    }
+//    print(i.displayName);
+//    print(i.keywordSearchableJobCustomAttributes);
+//  }
+
+  Map metadata = {
+    "domain":"bera.com",
+    "sessionId": "122345",
+    "userId": "asdfgh",
+  };
+//  List<MatchingJob> jobs = await client.searchJob(metadata,"goog");
+  List<MatchingJob> jobs = await client.searchJob(metadata,"google", customAttributeFilter:'accommodations = "extra time"');
+
+  for(MatchingJob i in jobs){
+    print(i.job.title);
+    print((i.job.customAttributes== null)? "None":i.job.customAttributes['accommodations'].stringValues);
+    print(i.jobSummary);
+  }
+
 }
