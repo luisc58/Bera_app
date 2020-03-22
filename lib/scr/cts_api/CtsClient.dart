@@ -171,9 +171,17 @@ class CtsClient {
     }
   }
 
-  Future<List<MatchingJob>> searchJob(Map query)async {
+  /// job search function, returns a list of matchingjobs
+  Future<List<MatchingJob>> searchJob(Map requestMetadata, String search, {String customAttributeFilter=''})async {
     var jobs = await _getClient();
 
+    Map query = {
+      "requestMetadata":requestMetadata,
+      "jobQuery":{
+        "query":search,
+        "customAttributeFilter":customAttributeFilter,
+      },
+    };
     try {
       SearchJobsRequest request = SearchJobsRequest.fromJson(query);
       SearchJobsResponse response = await jobs.projects.jobs.search(

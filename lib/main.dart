@@ -12,8 +12,9 @@ import 'package:googleapis/jobs/v3.dart';
 
 
 
-void main() async{
+void main(){
   WidgetsFlutterBinding.ensureInitialized();
+  myTest();
 
   BlocSupervisor.delegate = SimpleBlocDelegate();
   final UserRepository userRepository = UserRepository();
@@ -50,4 +51,32 @@ class App extends StatelessWidget {
       ),
     );
   }
+}
+
+void myTest() async{
+  CtsClient client = new CtsClient();
+  List<Company> j = await client.getListCompanies();
+
+//  for (Company i in j) {
+//    if(i.displayName == "Google"){
+//      i.keywordSearchableJobCustomAttributes = ["accommodations"];
+//    }
+//    print(i.displayName);
+//    print(i.keywordSearchableJobCustomAttributes);
+//  }
+
+  Map metadata = {
+    "domain":"bera.com",
+    "sessionId": "122345",
+    "userId": "asdfgh",
+  };
+//  List<MatchingJob> jobs = await client.searchJob(metadata,"goog");
+  List<MatchingJob> jobs = await client.searchJob(metadata,"google", customAttributeFilter:'accommodations = "extra time"');
+
+  for(MatchingJob i in jobs){
+    print(i.job.title);
+    print((i.job.customAttributes== null)? "None":i.job.customAttributes['accommodations'].stringValues);
+    print(i.jobSummary);
+  }
+
 }
