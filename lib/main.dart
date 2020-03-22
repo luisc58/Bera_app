@@ -1,8 +1,8 @@
 import 'package:bera/scr/Blocs/authentication/authentication_bloc.dart';
 import 'package:bera/scr/Blocs/simple_bloc_delegate.dart';
 import 'package:bera/scr/DataLayer/user_repository.dart';
+import 'package:bera/scr/UI/Employee_screen.dart';
 import 'package:bera/scr/UI/Login/login_screen.dart';
-import 'package:bera/scr/UI/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:bloc/bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -38,7 +38,7 @@ class App extends StatelessWidget {
             return LoginScreen(userRepository: _userRepository);
           }
           if (state is Authenticated) {
-            return HomeScreen(name: state.displayName);
+            return EmployeePage(userRepository: _userRepository);
           }
           return Container();
         },

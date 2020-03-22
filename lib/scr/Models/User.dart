@@ -8,9 +8,9 @@ class User {
   final String photoUrl;
   final String displayName;
   final bool isEmployee;
+  final bool isFirstTimeUser;
 
-
-  const User({this.isEmployee = true, String email, String uid, String displayName, String photoUrl}) :
+  const User({this.isEmployee = true, this.isFirstTimeUser = true, String email, String uid, String displayName, String photoUrl}) :
       this.email = email, this.uid = uid, this.displayName = displayName, this.photoUrl = photoUrl;
 
 
@@ -20,9 +20,18 @@ class User {
       uid: document['uid'],
       photoUrl: document['photoUrt'],
       displayName: document['displayName'],
-      isEmployee: document['isEmployee']
+      isEmployee: document['isEmployee'],
+      isFirstTimeUser: document['isFirstTimeUser']
     );
   }
+
+   User.fromMap(Map snapshot, String id) :
+    email = snapshot['email'] ?? '',
+    uid = id ?? '',
+    photoUrl =  snapshot['photoUrl'] ?? '',
+    displayName = snapshot['displayName'] ?? '',
+    isEmployee = snapshot['isEmployee'] ?? true,
+    isFirstTimeUser = snapshot['isFirstTimeUser'] ?? true;
 
   String get userId => uid;
 
